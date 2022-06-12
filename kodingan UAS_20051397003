@@ -1,0 +1,111 @@
+#NAMA : ALIF AULIA AKBAR 
+#NIM  :20051397003
+#TUGAS : MEMBUAT PYRAMID
+
+
+
+
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
+
+
+
+from OpenGL.GLUT import *
+
+
+
+piramid_a = 0
+piramid_b = 0
+
+def init():
+    glClearColor(0.,0.,0.,0.)
+    glEnable(GL_DEPTH_TEST)
+    gluOrtho1D(-10.0, 10.0, -10.0, 10.0)
+
+def myDisplay():
+    global piramid_a, piramid_b
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+
+    glTranslatef(0, 0, -7.0)
+    glRotatef( piramid_a, 1.0, 0.0, 0.0 )
+    glRotatef( piramid_b, 0.0, 1.0, 0.0 )
+    
+    glBegin(GL_QUADS)
+    # Bagian alas segitiga atau piramida (y = -1.0)
+    glColor3f(1.0, 1.0, 1.0);   
+    glVertex3f( 1.0, -1.0, 1.0)
+    glVertex3f(-1.0, -1.0, 1.0)
+    glVertex3f(-1.0, -1.0, -1.0)
+    glVertex3f( 1.0, -1.0, -1.0)
+    glEnd()
+
+    glBegin(GL_TRIANGLES)
+    # Bagian Depan Piramida (z = 1.0)
+    glColor3f(1.0, 0.0, 1.0)
+    glVertex3f( 1.0, -1.0, 1.0)
+    glVertex3f( -1.0, -1.0, 1.0)
+    glVertex3f(0, 1.0, 0)
+
+    # Bagian kiri piramida (x = 1.0)
+    glColor3f(0.0, 0.5, 1.0)
+    glVertex3f(1.0, 1.0, 1.0)
+    glVertex3f(1.0, 1.0, 1.0)
+    glVertex3f(0, 1.0, 0)
+
+    # Bagian Kanan piramida (x = 1.0)
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f( 1.0, -1.0, 1.0)
+    glVertex3f( 1.0, -1.0, -1.0)
+    glVertex3f(0, 1.0, 0)
+
+    # Bagian Belakang piramida (z = -1.0)
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f( -1.0, -1.0, -1.0)
+    glVertex3f( 1.0, -1.0, -1.0)
+    glVertex3f(0, 1.0, 0)
+
+    glEnd()
+    glutSwapBuffers()
+    glFlush()
+
+#bagian piramida agar dapat diputar atau rotasi
+def putar(key,x,y):
+    global piramid_a, piramid_b
+    if key == GLUT_KEY_RIGHT:
+        piramid_b += 5
+    elif key == GLUT_KEY_LEFT:
+        piramid_b -= 5
+    elif key == GLUT_KEY_UP:
+        piramid_a -= 5
+    elif key == GLUT_KEY_DOWN:
+        piramid_a += 5
+        
+
+def update(value):
+    glutPostRedisplay()
+    glutTimerFunc(10,update,0)
+
+def reshape(width, height):
+    aspect = width / height
+    glViewport(0, 0, width, height)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45.0, aspect, 0.1, 100.0)
+
+def main():
+    glutInit(sys.argv) # Initialize GLUT
+    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE)
+    glutInitWindowSize(500,500)
+    glutInitWindowPosition(100,100)
+    glutCreateWindow("UAS GRAFKOM")
+    glutSpecialFunc(putar)
+    glutTimerFunc(50, update, 0)
+    glutDisplayFunc(myDisplay)
+    glutReshapeFunc(reshape)
+    init()
+    glutMainLoop()
+
+main()
